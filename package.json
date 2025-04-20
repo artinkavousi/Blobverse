@@ -1,0 +1,21 @@
+{
+  "name": "blobverse",
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "build": "turbo run build",
+    "dev": "turbo run dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "private": "true",
+  "devDependencies": {
+    "pnpm": "^8.6.0",
+    "turbo": "^2.5.0"
+  },
+  "packageManager": "pnpm@9.0.0"
+}
