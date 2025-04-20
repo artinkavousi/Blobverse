@@ -1,0 +1,40 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    devDependencies:
+      pnpm:
+        specifier: ^8.6.0
+        version: 8.15.9
+
+  apps/dashboard-app: {}
+
+  apps/docs-site: {}
+
+  packages/ecs-core: {}
+
+  packages/field-rd: {}
+
+  packages/physics-gravity: {}
+
+  packages/physics-mpm: {}
+
+  packages/physics-sph: {}
+
+  packages/vis-shaders: {}
+
+packages:
+
+  pnpm@8.15.9:
+    resolution: {integrity: sha512-SZQ0ydj90aJ5Tr9FUrOyXApjOrzuW7Fee13pDzL0e1E6ypjNXP0AHDHw20VLw4BO3M1XhQHkyik6aBYWa72fgQ==}
+    engines: {node: '>=16.14'}
+    hasBin: true
+
+snapshots:
+
+  pnpm@8.15.9: {}
