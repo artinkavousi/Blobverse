@@ -1,6 +1,13 @@
 import { World, register } from '@blobverse/ecs-core';
 import { Position, Velocity, Fluid } from './components';
 import { createUniformGrid, neighbours } from './spatial-hash';
+import {
+  poly6,
+  spikyGrad,
+  viscLaplace,
+  length,
+  Vec3,
+} from './math';
 import { SPHParams } from './types';
 
 /**
@@ -15,14 +22,20 @@ export class SphSystem {
     const { h, restDensity, k, mu, g, dt } = { ...defaultParams, ...this.params };
 
     // 1. build neighbour grid
-    const grid = createUniformGrid(world, Position, h);
+    const grid = createUniformGrid(world, h);
 
     // 2. density & pressure
     for (const eid of world.query([Position, Fluid] as any)) {
-      const rho = neighbours(eid, grid, h, (j: number) => {
-        if (j === eid) return 0;
-        const rij = dist(eid, j);
-        return poly6(rij, h);
+      let rho = 0;
+      neighbours(eid, grid, h, (j: number) => {
+        if (j === eid) return;
+        const rVec: Vec3 = {
+          x: Position.x[eid] - Position.x[j],
+          y: Position.y[eid] - Position.y[j],
+          z: Position.z[eid] - Position.z[j],
+        };
+        const r = length(rVec);
+        rho += poly6(r, h);
       });
       Fluid.density[eid] = rho;
       Fluid.pressure[eid] = k * (rho - restDensity);
@@ -33,21 +46,25 @@ export class SphSystem {
       let fX = 0, fY = -g, fZ = 0;
       neighbours(eid, grid, h, (j: number) => {
         if (j === eid) return;
-        const rijVec = distVec(eid, j);
-        const r = length(rijVec);
+        const rVec: Vec3 = {
+          x: Position.x[eid] - Position.x[j],
+          y: Position.y[eid] - Position.y[j],
+          z: Position.z[eid] - Position.z[j],
+        };
+        const r = length(rVec);
         // pressure
         const pTerm = -(Fluid.pressure[eid] + Fluid.pressure[j]) / (2 * Fluid.density[j]);
-        const spikyGrad = spiky(r, h);
-        fX += pTerm * spikyGrad * rijVec.x;
-        fY += pTerm * spikyGrad * rijVec.y;
-        fZ += pTerm * spikyGrad * rijVec.z;
+        const grad = spikyGrad(r, h);
+        fX += pTerm * grad * rVec.x;
+        fY += pTerm * grad * rVec.y;
+        fZ += pTerm * grad * rVec.z;
         // viscosity
         const uij = {
           x: Velocity.x[j] - Velocity.x[eid],
           y: Velocity.y[j] - Velocity.y[eid],
           z: Velocity.z[j] - Velocity.z[eid],
         };
-        const visc = mu * viscLaplacian(r, h);
+        const visc = mu * viscLaplace(r, h);
         fX += visc * uij.x;
         fY += visc * uij.y;
         fZ += visc * uij.z;
