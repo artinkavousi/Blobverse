@@ -1,0 +1,11 @@
+packages:
+  - 'packages/vis-shaders'
+  - 'packages/field-rd'
+  - 'packages/physics-mpm'
+  - 'packages/physics-sph'
+  - 'packages/physics-gravity'
+  - 'apps/docs-site'
+  - 'apps/dashboard-app'
+  - 'packages/ecs-core'
+  - 'apps/**'
+  - 'packages/**'
