@@ -3,8 +3,10 @@ import { Canvas } from '@react-three/fiber';
 import { useControls } from 'leva';
 import { useStore } from '@blobverse/ecs-core-zustand';
 import '@blobverse/physics-sph';
+import { initSphGPGPU } from '@blobverse/physics-sph';
 import { Particles } from './Particles';
 import { World } from '@blobverse/ecs-core';
+import { ControlPanel } from './ControlPanel';
 
 export default function App() {
   // SPH parameters in Leva panel
@@ -19,11 +21,14 @@ export default function App() {
   // update global ECS store
   useStore.setState({ h, restDensity, k, mu, g, dt });
 
-  // render R3F canvas
+  // render metadata controls and R3F canvas
   return (
-    <Canvas>
-      {/* Scene Systems will execute SPH simulation systems */}
-      <Particles world={World} />
-    </Canvas>
+    <>
+      <ControlPanel />
+      <Canvas onCreated={({ gl }) => initSphGPGPU(gl, 2048)}>
+        {/* Scene Systems will execute SPH simulation systems */}
+        <Particles world={World} />
+      </Canvas>
+    </>
   );
 }

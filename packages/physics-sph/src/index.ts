@@ -3,3 +3,4 @@ export * from './math';
 export * from './spatial-hash';
 export * from './types';
 export * from "./gpu/SphCompute";
+export * from './spawn';
