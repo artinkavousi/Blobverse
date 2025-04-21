@@ -7,6 +7,7 @@ import { initSphGPGPU } from '@blobverse/physics-sph';
 import { Particles } from './Particles';
 import { World } from '@blobverse/ecs-core';
 import { ControlPanel } from './ControlPanel';
+import { MetaballMesh } from './MetaballMesh';
 
 export default function App() {
   // SPH parameters in Leva panel
@@ -27,7 +28,10 @@ export default function App() {
       <ControlPanel />
       <Canvas onCreated={({ gl }) => initSphGPGPU(gl, 2048)}>
         {/* Scene Systems will execute SPH simulation systems */}
-        <Particles world={World} />
+        {/* Uncomment below to visualize points */}
+        {/* <Particles world={World} /> */}
+        {/* Metaball mesh surface */}
+        <MetaballMesh world={World} />
       </Canvas>
     </>
   );

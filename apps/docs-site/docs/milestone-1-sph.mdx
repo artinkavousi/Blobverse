@@ -1,1 +1,98 @@
 SPH Fluid Simulation documentation placeholder.
+
+## Milestone 2: Real GPU Fluid (SPH-GPU Alpha)
+
+This documentation covers the implementation of the GPU-based SPH density, pressure, and velocity passes, as well as the metaball surface mesh via MarchingCubes.
+
+### Density & Pressure Shaders (WebGL Path)
+
+- `density.frag`: Calculates particle density using a 9-tap neighborhood poly6 kernel.  
+- `pressure.frag`: Computes pressure from density (`P = k(rho - rho0)`).
+
+### Compute Pipeline Registration (WebGL)
+
+The `initSphGPGPU` function in `SphCompute.ts` registers four variables:
+
+```ts
+// WebGL compute pass registration
+gpuCompute.addVariable('texturePosition', posFrag, pos0);
+gpuCompute.addVariable('textureVelocity', velFrag, vel0);
+gpuCompute.addVariable('textureDensity', densityFrag, den0);
+gpuCompute.addVariable('texturePressure', pressureFrag, pre0);
+```
+
+Dependencies:
+- **Density** depends on **Position**  
+- **Pressure** depends on **Position & Density**  
+- **Velocity** depends on **Position, Velocity & Pressure**  
+- **Position** depends on **Position & Velocity**
+
+### WGSL Compute Module (WebGPU)
+
+The `sph.wgsl` file contains SPH kernel functions:
+
+```wgsl
+fn poly6(r: f32, h: f32) -> f32 {
+  return select(0.0,
+    315.0 / (64.0 * PI * pow(h, 9.0)) * pow(h * h - r * r, 3.0),
+    r <= h);
+}
+
+fn spiky_grad(r: f32, h: f32) -> f32 {
+  return select(0.0,
+    -45.0 / (PI * pow(h, 6.0)) * pow(h - r, 2.0),
+    r > 0.0 && r <= h);
+}
+```
+
+Two compute pipelines are scheduled each frame:
+
+```ts
+// pseudo-code for WebGPU pipeline registration
+registerComputePipeline({
+  workgroupSize: 128,
+  source: densityWGSL,
+  bindings: [particleBuffer],
+});
+registerComputePipeline({
+  workgroupSize: 128,
+  source: forceWGSL,
+  bindings: [particleBuffer, densityBuffer],
+});
+```
+
+### Metaball Surface Mesh
+
+Use the `MetaballMesh` component in your R3F scene:
+
+```tsx
+<Canvas onCreated={({ gl }) => initSphGPGPU(gl, nParticles)}>
+  <MetaballMesh world={World} resolution={32} ballSize={0.05} isolation={12} />
+</Canvas>
+```
+
+Under the hood, it loops through ECS `Position` components each frame:
+
+```ts
+mc.reset();
+for (const eid of world.query([Position])) {
+  mc.addBall(
+    Position.x[eid],
+    Position.y[eid],
+    Position.z[eid],
+    ballSize,
+    isolation
+  );
+}
+```
+
+### Leva & Zustand Integration
+
+Control panel binds to `h`, `k`, `mu`, and `g` via `metadata.json`. These values update GPU compute shader uniforms each frame.
+
+```ts
+// in gpuBridgeSystem()
+_denVar.material.uniforms.h.value = store.getState().h;
+_preVar.material.uniforms.k.value = store.getState().k;
+_velVar.material.uniforms.mu.value = store.getState().mu;
+```
