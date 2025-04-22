@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { useControls } from 'leva';
 import { useStore } from '@blobverse/ecs-core-zustand';
 import '@blobverse/physics-sph';
 import { initSphGPGPU } from '@blobverse/physics-sph';
+import { enableSystem, disableSystem } from '@blobverse/ecs-core';
+import { SphSystem } from '@blobverse/physics-sph';
+import { MpmSystem } from '@blobverse/physics-mpm';
 import { Runner } from './Runner';
 import { RayMarchMesh } from './RayMarchMesh';
 import { World } from '@blobverse/ecs-core';
@@ -21,6 +24,19 @@ export default function App() {
   });
   // update global ECS store
   useStore.setState({ h, restDensity, k, mu, g, dt });
+
+  // Simulation mode: 'sph' or 'mpm'
+  const { mode } = useControls({ mode: { options: ['sph', 'mpm'] } });
+  // Hot-swap systems
+  useEffect(() => {
+    if (mode === 'sph') {
+      enableSystem(SphSystem);
+      disableSystem(MpmSystem);
+    } else {
+      enableSystem(MpmSystem);
+      disableSystem(SphSystem);
+    }
+  }, [mode]);
 
   // render metadata controls and R3F canvas
   return (

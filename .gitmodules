@@ -1,0 +1,3 @@
+[submodule "external/pb-mpm"]
+	path = external/pb-mpm
+	url = https://github.com/electronicarts/pbmpm

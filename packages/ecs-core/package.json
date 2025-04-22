@@ -5,6 +5,9 @@
   "scripts": {
     "build": "tsc"
   },
-  "dependencies": {},
+  "dependencies": {
+    "inversify": "^6.0.0",
+    "reflect-metadata": "^0.1.13"
+  },
   "devDependencies": {}
 }
