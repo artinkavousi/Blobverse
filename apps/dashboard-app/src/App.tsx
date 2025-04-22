@@ -4,10 +4,10 @@ import { useControls } from 'leva';
 import { useStore } from '@blobverse/ecs-core-zustand';
 import '@blobverse/physics-sph';
 import { initSphGPGPU } from '@blobverse/physics-sph';
-import { Particles } from './Particles';
+import { Runner } from './Runner';
+import { RayMarchMesh } from './RayMarchMesh';
 import { World } from '@blobverse/ecs-core';
 import { ControlPanel } from './ControlPanel';
-import { MetaballMesh } from './MetaballMesh';
 
 export default function App() {
   // SPH parameters in Leva panel
@@ -27,11 +27,11 @@ export default function App() {
     <>
       <ControlPanel />
       <Canvas onCreated={({ gl }) => initSphGPGPU(gl, 2048)}>
-        {/* Scene Systems will execute SPH simulation systems */}
-        {/* Uncomment below to visualize points */}
-        {/* <Particles world={World} /> */}
-        {/* Metaball mesh surface */}
-        <MetaballMesh world={World} />
+        {/* Scene Systems execution */}
+        <ambientLight />
+        <directionalLight position={[0, 1, 1]} />
+        <Runner />
+        <RayMarchMesh />
       </Canvas>
     </>
   );

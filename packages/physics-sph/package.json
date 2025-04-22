@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "bitecs": "^0.3.40",
-    "@blobverse/ecs-core": "*"
+    "@blobverse/ecs-core": "*",
+    "gpu-distance-field": "*"
   },
   "devDependencies": {}
 }
