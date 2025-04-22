@@ -5,6 +5,11 @@
   "scripts": {
     "build": "tsc"
   },
-  "dependencies": {},
+  "dependencies": {
+    "three": "*",
+    "@blobverse/ecs-core": "*",
+    "@blobverse/ecs-core-zustand": "*",
+    "@blobverse/physics-sph": "*"
+  },
   "devDependencies": {}
 }

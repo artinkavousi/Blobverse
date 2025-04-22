@@ -1,5 +1,5 @@
 import { GPUComputationRenderer } from 'three/examples/jsm/misc/GPUComputationRenderer.js';
-import { WebGLRenderer, DataTexture, RGBAFormat, FloatType } from 'three';
+import { WebGLRenderer, DataTexture, RGBAFormat, FloatType, Texture, Vector2 } from 'three';
 import { register } from '@blobverse/ecs-core';
 import { Position, Velocity } from '../components';
 import posFrag from './shaders/pos.frag?raw';
@@ -109,4 +109,15 @@ export function gpuBridgeSystem() {
   }
 }
 
-register(gpuBridgeSystem); 
+register(gpuBridgeSystem);
+
+// expose SPH velocity texture for advecting RD chemicals
+export function getVelocityTexture(): Texture {
+  if (!_gpuCompute) throw new Error('GPU compute not initialized');
+  return _gpuCompute.getCurrentRenderTarget(_velVar).texture;
+}
+
+// expose grid resolution for advect shader
+export function getGridResolution(): Vector2 {
+  return new Vector2(_gpuSize, _gpuSize);
+} 

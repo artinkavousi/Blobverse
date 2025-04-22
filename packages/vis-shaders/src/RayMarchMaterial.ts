@@ -1,10 +1,11 @@
 import { ShaderMaterial, Matrix4, Texture } from 'three';
 import sdRaymarchFrag from './shaders/raymarch.frag?raw';
 
-export const RayMarchMaterial = (distTex: Texture) =>
+export const RayMarchMaterial = (distTex: Texture, rdTex: Texture) =>
   new ShaderMaterial({
     uniforms: {
       uDist: { value: distTex },
+      uRD: { value: rdTex },
       uInvProj: { value: new Matrix4() },
       iso: { value: 0.0 }
     },

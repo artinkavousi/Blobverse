@@ -16,6 +16,7 @@
     "leva": "^0.10.32",
     "@blobverse/ecs-core-zustand": "^0.1.0",
     "@blobverse/physics-sph": "*",
+    "@blobverse/field-rd": "*",
     "three": "^0.152.0",
     "@types/three": "^0.152.0"
   },

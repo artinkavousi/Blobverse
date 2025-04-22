@@ -9,7 +9,8 @@ import { SphSystem } from '@blobverse/physics-sph';
 import { MpmSystem } from '@blobverse/physics-mpm';
 import { Runner } from './Runner';
 import { RayMarchMesh } from './RayMarchMesh';
-import { World } from '@blobverse/ecs-core';
+import { World, enableSystem } from '@blobverse/ecs-core';
+import { RdSystem } from '@blobverse/field-rd';
 import { ControlPanel } from './ControlPanel';
 
 export default function App() {
@@ -42,7 +43,15 @@ export default function App() {
   return (
     <>
       <ControlPanel />
-      <Canvas onCreated={({ gl }) => initSphGPGPU(gl, 2048)}>
+      <Canvas
+        onCreated={({ gl }) => {
+          // initialize SPH GPU compute
+          initSphGPGPU(gl, 2048);
+          // enable and initialize Reaction-Diffusion system
+          enableSystem(RdSystem);
+          RdSystem.instance.init(gl);
+        }}
+      >
         {/* Scene Systems execution */}
         <ambientLight />
         <directionalLight position={[0, 1, 1]} />
