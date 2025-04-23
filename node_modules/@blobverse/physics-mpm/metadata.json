@@ -1,0 +1,9 @@
+{
+  "displayName": "MLS-MPM",
+  "controls": {
+    "youngModulus": { "value": 400, "min": 50, "max": 1000 },
+    "poissonRatio": { "value": 0.2, "min": 0.01, "max": 0.48 },
+    "yield": { "value": 2, "min": 0, "max": 10 },
+    "plasticHardening": { "value": 10, "min": 0, "max": 30 }
+  }
+} 

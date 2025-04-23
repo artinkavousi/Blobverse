@@ -6,7 +6,8 @@
     "test": "turbo run test",
     "lint": "turbo run lint",
     "build": "turbo run build",
-    "dev": "turbo run dev"
+    "dev": "turbo run dev",
+    "dev:app": "npm run build && turbo run dev --filter=dashboard-app"
   },
   "keywords": [],
   "author": "",

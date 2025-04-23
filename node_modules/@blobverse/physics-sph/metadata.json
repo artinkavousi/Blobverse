@@ -1,0 +1,1 @@
+{ "displayName": "SPH Fluid", "controls": { "h": { "value": 0.04, "min": 0.01, "max": 0.1, "step": 0.005 }, "mu": { "value": 0.1, "min": 0.0, "max": 2.0, "step": 0.01 }, "k": { "value": 4, "min": 0, "max": 10, "step": 0.1 }, "g": { "value": 9.81, "min": 0, "max": 20, "step": 0.1 } } }
